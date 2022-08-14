@@ -5,6 +5,6 @@ namespace DemoApplication.WebAPI.Services
 {
     public interface IEmployeeService : IBaseDataRepository<EmployeeTransport>
     {
-        EmployeeTransport GetBySearchTerm(string searchTerm);
+        List<EmployeeTransport> GetBySearchTerm(string searchTerm);
     }
 }

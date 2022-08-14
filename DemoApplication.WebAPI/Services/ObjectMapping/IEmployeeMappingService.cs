@@ -6,7 +6,7 @@ namespace DemoApplication.WebAPI.Services.ObjectMapping
     public interface IEmployeeMappingService
     {
         Employee MapToEmployee(EmployeeTransport transport);
-        EmployeeTransport MapToEmployee(Employee entity);
-        List<EmployeeTransport> MapToEmployee(List<Employee> entities);
+        EmployeeTransport MapToEmployeeTransport(Employee entity);
+        List<EmployeeTransport> MapToEmployeeTransport(List<Employee> entities);
     }
 }

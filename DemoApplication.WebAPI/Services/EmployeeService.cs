@@ -8,12 +8,9 @@ namespace DemoApplication.WebAPI.Services
 {
     public class EmployeeService : IEmployeeService
     {
-
-
         private readonly IEmployeeMappingService _employeeMappingService;
-
-
         private readonly ApplicationDbContext _applicationDbContext;
+
         public EmployeeService(ApplicationDbContext applicationDbContext, IEmployeeMappingService employeeMappingService)
         {
             _applicationDbContext = applicationDbContext;
@@ -37,7 +34,7 @@ namespace DemoApplication.WebAPI.Services
                 .Include(x => x.EmployeeGovernmentNumbers)
                 .Where(e => e.Id == id).FirstOrDefault();
 
-            var result = _employeeMappingService.MapToEmployee(employee);
+            var result = _employeeMappingService.MapToEmployeeTransport(employee);
 
             return result;
         }
@@ -49,7 +46,7 @@ namespace DemoApplication.WebAPI.Services
                 .Include(x => x.EmployeeGovernmentNumbers)
                 .ToList();
 
-            var result = _employeeMappingService.MapToEmployee(employee);
+            var result = _employeeMappingService.MapToEmployeeTransport(employee);
 
             return result;
         }
@@ -60,18 +57,18 @@ namespace DemoApplication.WebAPI.Services
                .Include(x => x.EmployeeContacts)
                .Include(x => x.EmployeeGovernmentNumbers)
                .Where(e => e.Id == entity.Id).FirstOrDefault();
-                       
-
-            employee = _employeeMappingService.MapToEmployee(entity);
 
             employee.UpdatedOn = DateTime.Now;
             employee.UpdatedBy = "User";
+
+            employee = _employeeMappingService.MapToEmployee(entity);
+
 
             _applicationDbContext.SaveChanges();
         }
 
 
-        public EmployeeTransport GetBySearchTerm(string searchTerm)
+        public List<EmployeeTransport> GetBySearchTerm(string searchTerm)
         {
             var employee = _applicationDbContext.Employee
                 .Include(x => x.EmployeeContacts)
@@ -80,9 +77,9 @@ namespace DemoApplication.WebAPI.Services
                 EF.Functions.Like(e.FirstName, searchTerm) ||
                 EF.Functions.Like(e.LastName, searchTerm) ||
                 EF.Functions.Like(e.EmployeeNumber, searchTerm))
-                .FirstOrDefault();
+                .ToList();
 
-            var result = _employeeMappingService.MapToEmployee(employee);
+            var result = _employeeMappingService.MapToEmployeeTransport(employee);
 
             return result;
 
@@ -92,7 +89,7 @@ namespace DemoApplication.WebAPI.Services
 
         //public EmployeeTransport Get(long id)
         //{
-        //    return _applicationDbContext.Employee.Where(x=>x.Id == id).FirstOrDefault();
+        //    return _applicationDbContext.Employee.Where(x => x.Id == id).FirstOrDefault();
         //}
 
         //public IEnumerable<EmployeeTransport> GetAll()
@@ -107,7 +104,8 @@ namespace DemoApplication.WebAPI.Services
 
         //public void Update(EmployeeTransport entity)
         //{
-        //    if (entity.Id != 0 || entity.Id != null) {
+        //    if (entity.Id != 0 || entity.Id != null)
+        //    {
 
         //        var modifiedDate = DateTime.Now;
 

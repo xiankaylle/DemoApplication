@@ -64,8 +64,9 @@ namespace DemoApplication.WebAPI.Services.ObjectMapping
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public EmployeeTransport MapToEmployee(Employee entity)
+        public EmployeeTransport MapToEmployeeTransport(Employee entity)
         {
+
             var employeeContactsTransport = entity.EmployeeContacts
                 .Select(x => new EmployeeContactsTransport
             {
@@ -114,8 +115,12 @@ namespace DemoApplication.WebAPI.Services.ObjectMapping
 
             return employee;
         }
-
-        public List<EmployeeTransport> MapToEmployee(List<Employee> entities)
+        /// <summary>
+        /// Map List of entity to List of transport
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public List<EmployeeTransport> MapToEmployeeTransport(List<Employee> entities)
         {
             var employeeTranport = new List<EmployeeTransport>();
             entities.ForEach(e =>
