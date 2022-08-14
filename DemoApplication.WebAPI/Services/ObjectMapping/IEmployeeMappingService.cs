@@ -7,5 +7,6 @@ namespace DemoApplication.WebAPI.Services.ObjectMapping
     {
         Employee MapToEmployee(EmployeeTransport transport);
         EmployeeTransport MapToEmployee(Employee entity);
+        List<EmployeeTransport> MapToEmployee(List<Employee> entities);
     }
 }

@@ -2,12 +2,13 @@
 using DemoApplication.WebAPI.Models;
 using DemoApplication.WebAPI.Services.ObjectMapping;
 using DemoApplication.WebAPI.Transports;
+using Microsoft.EntityFrameworkCore;
 
 namespace DemoApplication.WebAPI.Services
 {
     public class EmployeeService : IEmployeeService
     {
-      
+
 
         private readonly IEmployeeMappingService _employeeMappingService;
 
@@ -25,27 +26,67 @@ namespace DemoApplication.WebAPI.Services
 
             _applicationDbContext.Employee.Add(employee);
 
-            _applicationDbContext.SaveChanges();      
-        
+            _applicationDbContext.SaveChanges();
+
         }
 
         public EmployeeTransport Get(long id)
         {
-            throw new NotImplementedException();
+            var employee = _applicationDbContext.Employee
+                .Include(x => x.EmployeeContacts)
+                .Include(x => x.EmployeeGovernmentNumbers)
+                .Where(e => e.Id == id).FirstOrDefault();
+
+            var result = _employeeMappingService.MapToEmployee(employee);
+
+            return result;
         }
 
         public IEnumerable<EmployeeTransport> GetAll()
         {
-            throw new NotImplementedException();
-        }
+            var employee = _applicationDbContext.Employee
+                .Include(x => x.EmployeeContacts)
+                .Include(x => x.EmployeeGovernmentNumbers)
+                .ToList();
 
-        mployeeTransport GetBySearchTerm(string searchTerm);
+            var result = _employeeMappingService.MapToEmployee(employee);
+
+            return result;
+        }
 
         public void Update(EmployeeTransport entity)
         {
-            throw new NotImplementedException();
+            var employee = _applicationDbContext.Employee
+               .Include(x => x.EmployeeContacts)
+               .Include(x => x.EmployeeGovernmentNumbers)
+               .Where(e => e.Id == entity.Id).FirstOrDefault();
+                       
+
+            employee = _employeeMappingService.MapToEmployee(entity);
+
+            employee.UpdatedOn = DateTime.Now;
+            employee.UpdatedBy = "User";
+
+            _applicationDbContext.SaveChanges();
         }
 
+
+        public EmployeeTransport GetBySearchTerm(string searchTerm)
+        {
+            var employee = _applicationDbContext.Employee
+                .Include(x => x.EmployeeContacts)
+                .Include(x => x.EmployeeGovernmentNumbers)
+                .Where(e =>
+                EF.Functions.Like(e.FirstName, searchTerm) ||
+                EF.Functions.Like(e.LastName, searchTerm) ||
+                EF.Functions.Like(e.EmployeeNumber, searchTerm))
+                .FirstOrDefault();
+
+            var result = _employeeMappingService.MapToEmployee(employee);
+
+            return result;
+
+        }
 
 
 
