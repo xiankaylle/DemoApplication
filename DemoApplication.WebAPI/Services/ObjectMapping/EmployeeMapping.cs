@@ -115,6 +115,48 @@ namespace DemoApplication.WebAPI.Services.ObjectMapping
 
             return employee;
         }
+
+        public Employee MapToEmployee(EmployeeTransport transport, Employee employeeEntity)
+        {
+
+            employeeEntity.Id = transport.Id;
+            employeeEntity.FirstName = transport.FName;
+            employeeEntity.LastName = transport.LName;
+            employeeEntity.MiddleName = transport.LName;
+            employeeEntity.UpdatedOn = transport.UpdatedOn;
+            employeeEntity.UpdatedBy = transport.UpdatedBy;
+            employeeEntity.EmployeeStatus = (EmployeeStatus)transport.EmployeeStatus;
+            employeeEntity.EmployeeContacts = transport.EmployeeContacts
+                    .Select(x => new EmployeeContacts
+                    {
+                        Id = (x.Id.HasValue ? x.Id : null),
+                        IsActive = x.IsActive,
+                        IsPrimary = x.IsPrimary,
+                        Type = x.Type,
+                        Value = x.Value,
+                        UpdatedBy = x.UpdatedBy,
+                        UpdatedOn = x.UpdatedOn,
+                        CreatedBy = x.CreatedBy,
+                        CreatedOn = x.CreatedOn,
+                        EmployeeContactType = (EmployeeContactTypes)x.EmployeeContactType
+
+                    }).ToList();
+            employeeEntity.EmployeeGovernmentNumbers = transport.EmployeeGovernmentNumbers
+                .Select(x => new EmployeeGovernmentNumbers
+                {
+                    Id = (x.Id.HasValue ? x.Id : null),
+                    UpdatedBy = x.UpdatedBy,
+                    UpdatedOn = x.UpdatedOn,
+                    Value = x.Value,
+                    Type = x.Type,
+
+                    CreatedBy = x.CreatedBy,
+                    CreatedOn = x.CreatedOn,
+                    GovernmentNumberTypeId = (GovernmentNumberType)x.GovernmentNumberTypeId
+                }).ToList();
+
+            return employeeEntity;
+        }
         /// <summary>
         /// Map List of entity to List of transport
         /// </summary>

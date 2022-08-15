@@ -4,7 +4,7 @@
     {
         IEnumerable<TEntity> GetAll();
         TEntity Get(long id);
-        void Add(TEntity entity);
-        void Update(TEntity entity);
+        void Add(TEntity transportEntity);
+        void Update(TEntity transportEntity);
     }
 }

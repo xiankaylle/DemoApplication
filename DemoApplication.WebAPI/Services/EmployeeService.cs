@@ -17,9 +17,9 @@ namespace DemoApplication.WebAPI.Services
             _employeeMappingService = employeeMappingService;
         }
 
-        public void Add(EmployeeTransport entity)
+        public void Add(EmployeeTransport transportEntity)
         {
-            var employee = _employeeMappingService.MapToEmployee(entity);
+            var employee = _employeeMappingService.MapToEmployee(transportEntity);
 
             _applicationDbContext.Employee.Add(employee);
 
@@ -51,22 +51,21 @@ namespace DemoApplication.WebAPI.Services
             return result;
         }
 
-        public void Update(EmployeeTransport entity)
+        public void Update(EmployeeTransport transportEntity)
         {
             var employee = _applicationDbContext.Employee
                .Include(x => x.EmployeeContacts)
                .Include(x => x.EmployeeGovernmentNumbers)
-               .Where(e => e.Id == entity.Id).FirstOrDefault();
+               .Where(e => e.Id == transportEntity.Id).FirstOrDefault();
 
             employee.UpdatedOn = DateTime.Now;
             employee.UpdatedBy = "User";
 
-            employee = _employeeMappingService.MapToEmployee(entity);
+            employee = _employeeMappingService.MapToEmployee(transportEntity, employee);
 
 
             _applicationDbContext.SaveChanges();
         }
-
 
         public List<EmployeeTransport> GetBySearchTerm(string searchTerm)
         {
